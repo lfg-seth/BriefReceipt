@@ -21,14 +21,15 @@ A build-ready personal v1 plan for a configurable morning briefing printed at ho
 
 ## Decisions so far
 
-<!-- Research findings and resolved decisions are indexed here by ticket name. -->
+- [Investigate subscription-backed AI and Codex project context](issues/01-ai-and-codex-feasibility.md) — Supported subscription/API paths exist; account eligibility and desktop-history visibility need validation before execution is chosen.
+- [Find a compatible receipt printer and physical controls within budget](issues/02-hardware-feasibility.md) — An 80mm cutter-equipped station can plausibly fit $200 with the owned Pi, conditional on included power and accessories.
+- [Investigate iCloud, weather, news, and market data sources](issues/03-content-source-feasibility.md) — Calendar and weather are practical; Reminders needs validation, and market freshness/display rights determine provider fit.
 
 ## Not yet specified
 
-- The useful meaning of a project update across GitHub and desktop activity, including which evidence can support it and how to handle unavailable work context.
+- Work information beyond GitHub and local Codex project activity; its sources and useful role remain unknown.
 - Additional briefing types, blocks, shortcuts, and menu workflows as the daily routine becomes clearer.
 - Enclosure appearance, accessibility, and how much of the build should be visible in demonstrations, beyond the initial hardware compatibility investigation.
-- The final implementation sequence and acceptance scenarios after the component decisions settle.
 
 ## Out of scope
 

@@ -13,3 +13,6 @@ A configurable section of a briefing, such as weather, calendar events, news, or
 
 **Layout**:
 The arrangement and presentation of blocks in a briefing.
+
+**Market snapshot**:
+A collection of observations for tracked market instruments at a point in time, with the observation time attached to each value.
