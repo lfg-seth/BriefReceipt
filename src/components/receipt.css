@@ -1,0 +1,457 @@
+.receipt-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 27px 16px 36px;
+  color: #191b17;
+}
+.receipt-measure-label {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 16px;
+  color: #7b7e73;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+.receipt-scale-space {
+  position: relative;
+  flex-shrink: 0;
+}
+.receipt-paper {
+  position: relative;
+  width: var(--receipt-paper-width);
+  min-height: 120mm;
+  margin: 0;
+  padding: 8mm 0 4mm;
+  background: #fffffc;
+  color: #141611;
+  box-sizing: border-box;
+  transform-origin: top left;
+  font-family: "Courier New", Courier, monospace;
+  font-size: var(--receipt-font-size);
+  line-height: 1.45;
+  box-shadow:
+    0 2px 4px #282d1e12,
+    0 16px 32px #282d1e12;
+}
+.receipt-paper::before,
+.receipt-paper::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background:
+    linear-gradient(135deg, transparent 3px, #fffffc 0) 0 0/7px 7px,
+    linear-gradient(225deg, transparent 3px, #fffffc 0) 0 0/7px 7px;
+}
+.receipt-paper::before {
+  top: -3px;
+}
+.receipt-paper::after {
+  bottom: -3px;
+  transform: rotate(180deg);
+}
+.receipt-content {
+  width: var(--receipt-content-width);
+  margin: 0 auto;
+  overflow-wrap: anywhere;
+}
+.receipt-paper a {
+  color: inherit;
+  text-decoration: none;
+}
+.receipt-paper a:hover {
+  text-decoration: underline;
+}
+.receipt-paper p {
+  margin: 0;
+}
+.receipt-paper svg {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+  color: currentColor;
+}
+.receipt-header {
+  text-align: center;
+}
+.receipt-header h2 {
+  margin: 0 0 14px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.65em;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.receipt-header h2 span {
+  display: inline-block;
+}
+.receipt-rule-heavy {
+  border-top: 2px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  height: 3px;
+}
+.receipt-briefing-summary { font-size: 0.93em; line-height: 1.5; }
+.receipt-briefing-summary p { margin: 0; }
+.receipt-briefing-summary p + p { margin-top: 1em; }
+.receipt-summary-citation { margin-left: 0.15em; font-size: 0.75em; }
+.receipt-summary-citation a { color: inherit; text-decoration: underline; }
+.receipt-block {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px dashed currentColor;
+}
+.receipt-header + .receipt-block {
+  border-top: 0;
+  padding-top: 0;
+}
+.receipt-block h3 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 13px;
+  font-size: 1.1em;
+  font-family: inherit;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.receipt-detail {
+  margin-top: 4px;
+  font-size: 0.79em;
+  line-height: 1.5;
+}
+.receipt-data-mode {
+  margin-left: auto;
+  font-size: 0.6em;
+  font-weight: normal;
+  letter-spacing: 0;
+}
+.receipt-empty {
+  padding: 8px 0;
+  font-size: 0.87em;
+}
+.receipt-weather-location {
+  font-size: 0.83em;
+}
+.receipt-weather-current {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0 9px;
+}
+.receipt-weather-current strong {
+  display: block;
+  font-size: 2.5em;
+  letter-spacing: -0.07em;
+  line-height: 1.1;
+}
+.receipt-weather-current span {
+  display: block;
+  font-size: 0.9em;
+}
+.receipt-weather-details {
+  text-align: center;
+  font-size: 0.79em;
+  margin-bottom: 14px;
+}
+.receipt-paper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84em;
+  table-layout: fixed;
+}
+.receipt-paper th {
+  text-align: left;
+  font-weight: bold;
+}
+.receipt-paper thead {
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+.receipt-paper td,
+.receipt-paper th {
+  padding: 6px 2px;
+  vertical-align: top;
+}
+.receipt-forecast th:first-child {
+  width: 24%;
+}
+.receipt-forecast th:nth-child(2) {
+  width: 10%;
+}
+.receipt-forecast th:nth-child(3) {
+  width: 40%;
+  text-align: right;
+}
+.receipt-forecast th:last-child,
+.receipt-forecast td:last-child {
+  text-align: right;
+}
+.receipt-forecast td:nth-child(3) {
+  text-align: right;
+}
+.receipt-agenda-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.receipt-agenda-day {
+  margin: 12px 0 8px;
+  font-size: 0.75em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.receipt-agenda-day:first-child {
+  margin-top: 0;
+}
+.receipt-time {
+  font-size: 0.77em;
+  font-weight: bold;
+  line-height: 1.6;
+}
+.receipt-time span {
+  display: block;
+  font-weight: inherit;
+}
+.receipt-agenda-item strong {
+  font-size: 0.93em;
+}
+.receipt-calendar-description p {
+  white-space: pre-wrap;
+}
+.receipt-icon-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.receipt-icon-row svg {
+  margin-top: 2px;
+}
+.receipt-icon-row span,
+.receipt-icon-row p {
+  min-width: 0;
+}
+.receipt-calendar-location span {
+  white-space: pre-wrap;
+}
+.receipt-calendar-invitees {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.receipt-calendar-invitees li {
+  margin-top: 2px;
+}
+.receipt-calendar-travel {
+  margin-top: 5px;
+}
+.receipt-travel-row {
+  gap: 3px;
+  font-size: 0.73em;
+  white-space: nowrap;
+}
+.receipt-tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.receipt-tasks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 13px;
+}
+.receipt-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 9px;
+  height: 9px;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.receipt-task-completed strong {
+  text-decoration: line-through;
+}
+.receipt-tasks strong {
+  font-size: 0.93em;
+}
+.receipt-headlines {
+  margin: 0;
+  padding-left: 20px;
+}
+.receipt-headlines li {
+  padding-left: 2px;
+  margin-bottom: 14px;
+}
+.receipt-headlines strong {
+  font-size: 0.94em;
+}
+.receipt-news-excerpt {
+  margin: 4px 0 !important;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.receipt-local-area {
+  font-size: 0.8em;
+  margin-bottom: 14px !important;
+}
+.receipt-event {
+  margin-top: 13px;
+}
+.receipt-event strong {
+  font-size: 0.94em;
+}
+.receipt-event-date {
+  margin: 0 0 3px;
+  font-weight: bold;
+}
+.receipt-stocks { border-top: 1px solid currentColor; font-variant-numeric: tabular-nums; }
+.receipt-stock { padding: 13px 0 4px; }
+.receipt-stock + .receipt-stock { border-top: 1px dashed currentColor; margin-top: 13px; }
+.receipt-stock-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.receipt-stock-symbol { font-size: 1.3em; letter-spacing: 0.015em; line-height: 1.2; }
+.receipt-stock-price { font-size: 1.15em; white-space: nowrap; }
+.receipt-stock-history { display: grid; gap: 13px; margin-top: 12px; }
+.receipt-stock-performance { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 0.88em; }
+.receipt-stock-period-name { margin-right: auto; font-size: 0.85em; letter-spacing: 0.08em; }
+.receipt-stock-return { font-size: 1.1em; white-space: nowrap; }
+.receipt-stock-return > span { font-size: 0.8em; }
+.receipt-stock-dollars { white-space: nowrap; }
+.receipt-stock-unavailable { font-size: 0.85em; }
+.receipt-project {
+  margin-top: 14px;
+}
+.receipt-project > strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1em;
+}
+.receipt-project > p {
+  font-size: 0.86em;
+  margin: 4px 0;
+}
+.receipt-block-note {
+  margin-top: 12px !important;
+  padding-left: 8px;
+  border-left: 2px solid currentColor;
+  font-size: 0.86em;
+  font-style: italic;
+}
+.receipt-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+.receipt-footer p {
+  margin: 13px 0 10px;
+  font-size: 0.85em;
+}
+.receipt-footer > span {
+  font-size: 0.65em;
+  letter-spacing: 0.12em;
+}
+.receipt-cut {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+.receipt-cut span {
+  flex-grow: 1;
+  border-top: 1px dashed #565b4e;
+}
+.receipt-length {
+  margin-top: 22px;
+  font-size: 11px;
+  color: #73786b;
+  font-variant-numeric: tabular-nums;
+}
+.receipt-length span {
+  color: #8c9086;
+}
+.receipt-density-compact {
+  padding-top: 10px;
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.receipt-density-compact h3 {
+  margin-bottom: 8px;
+}
+.receipt-density-compact .receipt-agenda-item,
+.receipt-density-compact .receipt-tasks li,
+.receipt-density-compact .receipt-headlines li {
+  margin-bottom: 7px;
+}
+.receipt-density-compact .receipt-event,
+.receipt-density-compact .receipt-project {
+  margin-top: 8px;
+}
+.receipt-density-compact td,
+.receipt-density-compact th {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.receipt-density-compact .receipt-weather-current {
+  margin: 8px 0;
+}
+.receipt-ai-summary { font-style: italic; }
+.receipt-paper .receipt-sparkline { width: 100%; height: auto; display: block; color: #000; margin-top: 5px; }
+.receipt-ai-unavailable { font-size: 0.85em; }
+@media print {
+  body {
+    background: white !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .receipt-preview,
+  .receipt-preview * {
+    visibility: visible;
+  }
+  .receipt-preview {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: var(--receipt-paper-width);
+    padding: 0;
+    display: block;
+  }
+  .receipt-measure-label,
+  .receipt-length {
+    display: none;
+  }
+  .receipt-scale-space {
+    width: var(--receipt-paper-width) !important;
+    height: auto !important;
+  }
+  .receipt-paper {
+    transform: none !important;
+    box-shadow: none;
+    margin: 0;
+    padding-top: 4mm;
+    background: white;
+  }
+  .receipt-paper::before,
+  .receipt-paper::after {
+    display: none;
+  }
+  .receipt-block,
+  .receipt-project,
+  .receipt-event {
+    break-inside: avoid;
+  }
+}
+.receipt-footer .receipt-guardian-credit {
+  margin: 2mm 0 0 !important;
+  font-size: 0.68em;
+  line-height: 1.35;
+}

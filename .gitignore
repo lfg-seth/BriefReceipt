@@ -2,3 +2,10 @@
 .env
 .env.*
 !.env.example
+node_modules/
+dist/
+.local/
+playwright-report/
+test-results/
+*.pem
+*.key

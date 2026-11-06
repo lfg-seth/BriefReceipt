@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Connect Apple Reminders · Receipt Summary</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;max-width:680px;margin:30px auto;padding:0 22px;color:#30372e;background:#fafbf7}h1{font-size:28px;line-height:1.2}h2{font-size:20px;margin-top:32px}code,pre{font:13px/1.6 ui-monospace,monospace;background:#edf1e6;overflow-wrap:anywhere}pre{white-space:pre-wrap;padding:14px;border-radius:8px}button{font:inherit;background:#e9efde;color:#394c2b;border:1px solid #bcc9ac;border-radius:8px;padding:9px 14px;margin:4px 6px 4px 0}li{margin:14px 0}small{color:#66735c}input{font:inherit;width:100%;box-sizing:border-box;padding:10px;border:1px solid #bcc9ac;border-radius:6px}details{padding:14px;border:1px solid #dce4d2;border-radius:8px}</style></head>
+<body><h1>Your Reminders, on the morning receipt.</h1><p>This private page helps you build a read-only export in Apple Shortcuts. It does not request your Apple password.</p>
+<p id="connection" role="status">Setup guide is ready. On the iPhone, connect Tailscale and enable <strong>Use Tailscale DNS</strong> so the private server name resolves.</p>
+<h2>1. Keep these two values</h2><p>Upload URL</p><pre id="url"></pre><button id="copy-url">Copy upload URL</button>
+<p>Authorization header</p><pre id="authorization">Scan the new pairing QR code in the desktop app to get your upload token.</pre><button id="copy-token" hidden>Copy authorization</button><small>The token can replace this app’s Reminders snapshot. Keep it private. Creating another token on the desktop revokes this one.</small>
+<h2>2. Build “Send Reminders to Receipt”</h2>
+<p>Open <strong>Shortcuts</strong> on your iPhone, tap <strong>+</strong>, and name the shortcut <strong>Send Reminders to Receipt</strong>. Action labels can vary slightly by iOS version.</p>
+<details open><summary>Update an existing Shortcut to include checked-off reminders</summary><p>Remove the <strong>Is Completed is false</strong> filter from Find Reminders; keep your list filters. Inside Repeat, read <strong>Is Completed</strong> from Repeat Item. Use <strong>If</strong> to output the Text <code>true</code> for completed items and the Text <code>false</code> otherwise. Set a variable named <strong>Completed Flag</strong> to this If Result. Add a <strong>Text</strong> field named <code>completed</code> to each reminder Dictionary and select <strong>Completed Flag</strong> as its value. Leave your existing title/list/due fields, JSON assembly, URL and token in place. Run the Shortcut again. The server accepts these text flags and displays completed items due today through the next four days; completed overdue items stay hidden.</p></details>
+<ol>
+<li>Add <strong>Find Reminders</strong>. Filter only for your chosen list(s); remove any <strong>Is Completed is false</strong> filter. Turn off its item limit. Export both incomplete and completed items. The server shows overdue incomplete items, plus all reminders due today through the next four Pacific calendar days. Do not restrict the Shortcut to due-today items.</li>
+<li>Add <strong>Repeat with Each</strong>, using the found Reminders.</li>
+<li>Inside Repeat, add <strong>Get Details of Reminders</strong> for <strong>Due Date</strong> of <strong>Repeat Item</strong>. Add <strong>If</strong> Due Date has any value. In that branch, <strong>Format Date</strong> with Custom format <code>yyyy-MM-dd</code>; in Otherwise use an empty <strong>Text</strong> action. After End If, use <strong>Set Variable</strong> to name this If Result <strong>Due Day</strong>. This trial exports due days, not times; keep the phone’s date timezone on Pacific.</li>
+<li>Still inside Repeat, add <strong>Get Details of Reminders → Is Completed</strong>, selecting <strong>Repeat Item</strong>. Add <strong>If</strong> the completion value is true: a <strong>Text</strong> action containing <code>true</code>. In Otherwise, a <strong>Text</strong> action containing <code>false</code>. After End If, set a variable named <strong>Completed Flag</strong> to this If Result. These are lowercase text flags, making it unnecessary to bind a variable to a Dictionary Boolean switch.</li>
+<li>Still inside Repeat, add a <strong>Dictionary</strong> with four text fields. Use the properties of <strong>Repeat Item</strong> for the first two:<pre>title → Title of Repeat Item
+list  → List of Repeat Item (as text)
+due   → Due Day (formatted date or empty text)
+completed → Completed Flag (Text: true or false)</pre>Immediately after this Dictionary, <strong>inside Repeat</strong>, add <strong>Get Text from Input</strong> and select that Dictionary as its input. This serializes the reminder as JSON, preserving quotes and line breaks. Make Get Text the last action before End Repeat.</li>
+<li>After <strong>End Repeat</strong>, add <strong>Combine Text</strong>. Select <strong>Repeat Results</strong> as its input and set its separator to <strong>Custom</strong>: one comma <code>,</code>. Keep the input as Repeat Results, rather than selecting only its first item.</li>
+<li>Add <strong>Current Date</strong> and <strong>Format Date → ISO 8601</strong>. Then add a <strong>Text</strong> action containing:<pre>{
+  "version": 1,
+  "capturedAt": "FORMATTED_DATE",
+  "reminders": [
+    COMBINED_TEXT
+  ]
+}</pre>Replace <code>FORMATTED_DATE</code> using <strong>Select Variable → Formatted Date</strong>, keeping its surrounding quotes. Replace <code>COMBINED_TEXT</code> using <strong>Select Variable → Combined Text</strong>, with no quotes around that variable. Leave the square brackets in place: zero reminders becomes <code>[]</code>. <strong>No top-level Dictionary or Array field is needed.</strong> Do not type reminder titles directly into this JSON template.</li>
+<li>Add <strong>Set Name</strong> to name that Text <code>reminders.json</code>. The next action sends these JSON bytes as a file body.</li>
+<li>Add <strong>Get Contents of URL</strong>, using the upload URL above. Set <strong>Method → POST</strong>. Add these headers:<pre>Authorization → the full “Bearer …” value above
+Content-Type  → application/json</pre>Set <strong>Request Body → File</strong> and choose the named <code>reminders.json</code> text from the preceding action. This sends the already assembled JSON, including its reminders array.</li>
+<li>Add <strong>Show Result</strong> for the response. Run it once and approve Reminders/network access. A successful response includes <code>"ok":true</code> and a received count. A count of zero is a valid empty snapshot. Check the desktop Tasks panel for the same upload time, then select its lists.</li>
+</ol>
+<details><summary>Example JSON for checking your Text output</summary><pre>{
+  "version": 1,
+  "capturedAt": "2026-11-05T08:00:00-08:00",
+  "reminders": [
+    {"title": "Buy milk", "list": "Home", "due": "2026-11-05", "completed": "false"},
+    {"title": "Finished task", "list": "Home", "due": "2026-11-06", "completed": "true"}
+  ]
+}</pre><p>The date is an example. Use Current Date, not this literal value. Do not include notes, contacts, attachments or your Apple password.</p></details>
+<h2>3. Try automatic delivery</h2><p>Once the manual run works, remove Show Result. Create a <strong>Time of Day</strong> personal automation to run this shortcut before your briefing and choose <strong>Run Immediately</strong> (or disable Ask Before Running on older iOS). Test once while the phone is locked. The computer must be awake, the app running, and Tailscale connected on both devices.</p><p>Snapshots older than <strong>two hours</strong> show Unavailable. This trial does not run a print schedule. Nothing in the shortcut marks a reminder complete or changes it.</p>
+<p><a href="https://support.apple.com/en-lamr/guide/shortcuts/apd58d46713f/ios" rel="noreferrer">Apple: send request bodies in Shortcuts</a> · <a href="https://support.apple.com/guide/shortcuts/enable-or-disable-a-personal-automation-apd602971e63/ios" rel="noreferrer">Apple: personal automations</a></p>
+<script>
+const token = new URLSearchParams(location.hash.slice(1)).get('token');
+let uploadBase = location.origin;
+try { const base = new URL(new URLSearchParams(location.search).get('uploadBase')); if (base.protocol === 'https:' && /^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(base.hostname) && !base.username && !base.password && base.pathname === '/' && !base.search && !base.hash) uploadBase = base.origin; } catch {}
+history.replaceState(null, '', location.pathname);
+const uploadUrl = uploadBase + '/upload';
+document.querySelector('#url').textContent = uploadUrl;
+if (token && /^[A-Za-z0-9_-]{43}$/.test(token)) { document.querySelector('#authorization').textContent = 'Bearer ' + token; document.querySelector('#copy-token').hidden = false; }
+async function copy(value, button) { try { await navigator.clipboard.writeText(value); button.textContent = 'Copied'; } catch { button.textContent = 'Select and copy the value above'; } }
+document.querySelector('#copy-url').onclick = event => copy(uploadUrl, event.target);
+document.querySelector('#copy-token').onclick = event => copy('Bearer ' + token, event.target);
+</script></body></html>
