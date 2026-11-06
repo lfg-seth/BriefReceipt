@@ -18,7 +18,13 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:production
-      - run: systemd-analyze verify deploy/briefreceipt.service
+      - name: Verify systemd service
+        run: |
+          # setup-node uses the hosted tool cache; the VM uses system-wide Node.
+          if [ ! -x /usr/bin/node ]; then
+            sudo ln -s "$(command -v node)" /usr/bin/node
+          fi
+          systemd-analyze verify deploy/briefreceipt.service
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
         env:
