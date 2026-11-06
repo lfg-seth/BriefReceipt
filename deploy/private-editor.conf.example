@@ -1,0 +1,3 @@
+# /etc/systemd/system/briefreceipt.service.d/private-editor.conf
+[Service]
+Environment=RECEIPT_ORIGIN=http://briefreceipt.internal.example

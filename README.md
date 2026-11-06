@@ -32,7 +32,7 @@ npm start
 
 ## Linux VM deployment
 
-Use the [Linux deployment guide](docs/linux-deployment.md) and [systemd service](deploy/briefreceipt.service) for a private always-on instance with Node.js 24 LTS, automatic restart and boot startup. The editor stays on loopback and is accessed through SSH; iPhone uploads use the separate private Tailscale receiver. `RECEIPT_DATA_DIR` moves credentials, the AI budget ledger and Reminders state outside the checkout. The guide includes state migration, health checks, backups, updates and rollback. Scheduled printing and physical printer delivery remain future work.
+Use the [Linux deployment guide](docs/linux-deployment.md) and [systemd service](deploy/briefreceipt.service) for a private always-on instance with Node.js 24 LTS, automatic restart and boot startup. Access the loopback editor through SSH, or use the supplied Nginx configuration on port 80 with an explicit `RECEIPT_ORIGIN` for private-network access. iPhone uploads use the separate private Tailscale receiver. `RECEIPT_DATA_DIR` moves credentials, the AI budget ledger and Reminders state outside the checkout. The guide includes state migration, health checks, backups, updates and rollback. Scheduled printing and physical printer delivery remain future work.
 
 ## What works
 

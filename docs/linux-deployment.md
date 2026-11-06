@@ -2,7 +2,7 @@
 
 Target: Ubuntu 24.04 LTS or a comparable Debian-based VM with systemd, Git, curl and **Node.js 24 LTS**. Start with 2 GB RAM so dependency installation and builds have room. This is one private, personal instance. Scheduling and physical printer delivery are still unimplemented.
 
-The editor remains on `127.0.0.1:5173`, reached through SSH. The separate Reminders receiver remains on `127.0.0.1:5180`, optionally reached through private Tailscale Serve. No public website, reverse proxy or app-port firewall opening is required. The editor has no login and rejects non-localhost origins; do not expose it with Tailscale Serve or a public proxy.
+By default the editor remains on `127.0.0.1:5173`, reached through SSH. For direct private-network access on port 80, use the Nginx setup below. The separate Reminders receiver remains on `127.0.0.1:5180`, optionally reached through private Tailscale Serve. The editor has no login: access is limited by your trusted network. Keep it off the public internet.
 
 ## Install
 
@@ -47,7 +47,23 @@ The editor remains on `127.0.0.1:5173`, reached through SSH. The separate Remind
 
    The first response must report `"mode":"production"`; the second identifies the Reminders upload service. Logs: `sudo journalctl -u briefreceipt -n 100 --no-pager`. `Restart=on-failure` recovers crashes and `enable` starts the app on boot. One service instance owns the persistent AI budget ledger.
 
-## Open the editor from your computer
+## Private-network editor on port 80
+
+Install Nginx (`sudo apt-get install -y nginx`). Copy `deploy/nginx.conf` to `/etc/nginx/sites-available/briefreceipt` and replace `briefreceipt.internal.example` with the editor's DNS hostname. Remove only Nginx's unused default-site symlink from `/etc/nginx/sites-enabled/default`, then link the new site into `/etc/nginx/sites-enabled/briefreceipt`. The supplied configuration rejects unknown hostnames, preserves the browser's Host and Origin headers, and allows 120 seconds for AI requests. Do not rewrite Origin to bypass the application's checks.
+
+Copy `deploy/private-editor.conf.example` to `/etc/systemd/system/briefreceipt.service.d/private-editor.conf` (create that directory first) and set `RECEIPT_ORIGIN=http://your-editor-hostname` to match Nginx. This is a service environment setting, separate from the credentials `.env` file. The app accepts that exact host/origin plus its existing localhost access; foreign origins and cross-site requests remain blocked.
+
+```sh
+sudo nginx -t
+sudo systemctl daemon-reload
+sudo systemctl restart briefreceipt
+sudo systemctl enable --now nginx
+sudo systemctl reload nginx
+```
+
+Visit `http://your-editor-hostname` with no port suffix. Nginx listens on 80 and proxies to the unprivileged app on loopback 5173; the upload receiver is not proxied. Keep HTTP access inside the trusted LAN/VPN; add TLS before sending credentials over any untrusted network. To change domains, update both Nginx `server_name` and `RECEIPT_ORIGIN`, then restart/reload. Browser settings are stored separately for each editor origin.
+
+## Open the editor through SSH
 
 Run this on your computer, replacing the SSH user and VM hostname:
 
